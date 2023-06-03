@@ -87,7 +87,7 @@ public static class Tournament
             try
             {
                 StreamReader reder = new StreamReader(inStream);
-                string g;
+                string? g;
                 string[] r;
                 var lst = new List<string>();
                 var lst2 = new List<Team>();
@@ -96,37 +96,35 @@ public static class Tournament
                 while (!(reder.EndOfStream))
                 {
                     g = reder.ReadLine();
-                    r = g.Split(";");
-                    if (!(lst.Contains(r[1])))
+
+
+                    if (!string.IsNullOrWhiteSpace(g))
                     {
-                        lst.Add(r[1]);
-                        lst2.Add(new Team(r[1]));
-                    }
-                    if (!(lst.Contains(r[0])))
-                    {
-                        lst.Add(r[0]);
-                        lst2.Add(new Team(r[0]));
+                        r = g.Split(";");
+                        switch (r[2])
+                        {
+                            case "win":
+                                lst2.First(a => a.Name == r[0]).add(Func.Win);
+                                lst2.First(a => a.Name == r[1]).add(Func.Loss);
+                                break;
+
+                            case "draw":
+                                lst2.First(a => a.Name == r[0]).add(Func.Draw);
+                                lst2.First(a => a.Name == r[1]).add(Func.Draw);
+                                break;
+                            case "loss":
+                                lst2.First(a => a.Name == r[0]).add(Func.Loss);
+                                lst2.First(a => a.Name == r[1]).add(Func.Win);
+                                break;
+
+                            default:
+                                throw new InvalidOperationException();
+                        }
 
                     }
-                    switch (r[2])
-                    {
-                        case "win":
-                            lst2.Find(a => a.Name == r[0]).add(Func.Win);
-                            lst2.Find(a => a.Name == r[1]).add(Func.Loss);
-                            break;
 
-                        case "draw":
-                            lst2.Find(a => a.Name == r[0]).add(Func.Draw);
-                            lst2.Find(a => a.Name == r[1]).add(Func.Draw);
-                            break;
-                        case "loss":
-                            lst2.Find(a => a.Name == r[0]).add(Func.Loss);
-                            lst2.Find(a => a.Name == r[1]).add(Func.Win);
-                            break;
 
-                        default:
-                            throw new InvalidOperationException();
-                    }
+
 
                 }
                 inStream.Dispose();
